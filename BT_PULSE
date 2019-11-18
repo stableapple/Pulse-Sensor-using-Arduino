@@ -1,0 +1,32 @@
+#define USE_ARDUINO_INTERRUPTS true
+#include <PulseSensorPlayground.h>
+#include<SoftwareSerial.h>
+
+SoftwareSerial BTSerial(10, 11);
+int output_type = SERIAL_PLOTTER;
+const int pulse = 3;
+PulseSensorPlayground pulsor;
+
+void setup() {
+  // put your setup code here, to run once:
+  BTSerial.begin(9600);
+  Serial.begin(9600);
+  pulsor.analogInput(pulse);
+  if (pulsor.begin() > 0); {
+    Serial.println("we created a pulse sensor");
+    BTSerial.write("we created a pulse sensor");
+  }
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  int mybpm = pulsor.getBeatsPerMinute();
+
+  if (pulsor.sawStartOfBeat()) {
+    Serial.println("A heart beat happened ");
+    Serial.println(mybpm);
+    BTSerial.write("The beats per minute are: ");
+    BTSerial.println(mybpm);
+
+  }
+}
